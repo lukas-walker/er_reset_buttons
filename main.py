@@ -1,16 +1,42 @@
-# This is a sample Python script.
+from gpiozero import Button
+import requests
+import time
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+BASE_URL = "http://raspberrypi.local:8000"
 
+# Setup buttons with internal pull-ups
+btn_reset = Button(17, pull_up=True, bounce_time=0.1)
+btn_reboot = Button(27, pull_up=True, bounce_time=0.1)
+btn_shutdown = Button(22, pull_up=True, bounce_time=0.1)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def do_reset():
+    print("Reset button pressed")
+    try:
+        requests.post(f"{BASE_URL}/reset", timeout=3)
+    except Exception as e:
+        print("Error:", e)
 
+def do_reboot():
+    print("Reboot button pressed")
+    try:
+        requests.post(f"{BASE_URL}/reboot", timeout=3)
+    except Exception as e:
+        print("Error:", e)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def do_shutdown():
+    print("Shutdown button pressed")
+    try:
+        requests.post(f"{BASE_URL}/shutdown", timeout=3)
+    except Exception as e:
+        print("Error:", e)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Assign callbacks
+btn_reset.when_pressed = do_reset
+btn_reboot.when_pressed = do_reboot
+btn_shutdown.when_pressed = do_shutdown
+
+print("Physical control buttons ready...")
+
+# Keep program alive
+while True:
+    time.sleep(1)
