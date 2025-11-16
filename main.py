@@ -42,18 +42,20 @@ btn_shutdown.when_pressed = do_shutdown
 
 print("Physical control buttons ready...")
 
+while True:
+    try:
+        resp = requests.get(BASE_URL + "/state", timeout=0.5)
+        state = resp.json()
 
-try:
-    resp = requests.get(BASE_URL + "/state", timeout=0.5)
-    state = resp.json()
+        action = state.get("action")
 
-    action = state.get("action")
+        if action == "shutdown":
+            subprocess.run(["sudo", "shutdown", "now"])
 
-    if action == "shutdown":
-        subprocess.run(["sudo", "shutdown", "now"])
+        elif action == "reboot":
+            subprocess.run(["sudo", "reboot"])
 
-    elif action == "reboot":
-        subprocess.run(["sudo", "reboot"])
+    except Exception:
+        pass  # ignore network/JSON errors
 
-except Exception:
-    pass  # ignore network/JSON errors
+    time.sleep(1)
