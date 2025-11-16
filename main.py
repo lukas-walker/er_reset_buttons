@@ -1,8 +1,12 @@
 from gpiozero import Button
 import requests
 import time
+import server_utils
 
 BASE_URL = "http://raspberrypi.local:8000"
+
+server_utils.ensure_pid_file_is_usable()
+server_utils.write_pid_file()
 
 # Setup buttons with internal pull-ups
 btn_reset = Button(17, pull_up=False, bounce_time=0.1)
