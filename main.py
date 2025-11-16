@@ -5,9 +5,9 @@ import time
 BASE_URL = "http://raspberrypi.local:8000"
 
 # Setup buttons with internal pull-ups
-btn_reset = Button(17, pull_up=True, bounce_time=0.1)
-btn_reboot = Button(27, pull_up=True, bounce_time=0.1)
-btn_shutdown = Button(22, pull_up=True, bounce_time=0.1)
+btn_reset = Button(17, pull_down=True, bounce_time=0.1)
+btn_reboot = Button(27, pull_down=True, bounce_time=0.1)
+btn_shutdown = Button(22, pull_down=True, bounce_time=0.1)
 
 def do_reset():
     print("Reset button pressed")
