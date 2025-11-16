@@ -2,6 +2,7 @@ from gpiozero import Button
 import requests
 import time
 import server_utils
+import subprocess
 
 BASE_URL = "http://raspberrypi.local:8000"
 
@@ -41,6 +42,18 @@ btn_shutdown.when_pressed = do_shutdown
 
 print("Physical control buttons ready...")
 
-# Keep program alive
-while True:
-    time.sleep(1)
+
+try:
+    resp = requests.get(BASE_URL + "/state", timeout=0.5)
+    state = resp.json()
+
+    action = state.get("action")
+
+    if action == "shutdown":
+        subprocess.run(["sudo", "shutdown", "now"])
+
+    elif action == "reboot":
+        subprocess.run(["sudo", "reboot"])
+
+except Exception:
+    pass  # ignore network/JSON errors
