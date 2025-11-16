@@ -55,7 +55,7 @@ while True:
         elif action == "reboot":
             subprocess.run(["sudo", "reboot"])
 
-    except Exception:
-        pass  # ignore network/JSON errors
+    except Exception as e:
+        print(e)
 
     time.sleep(1)
